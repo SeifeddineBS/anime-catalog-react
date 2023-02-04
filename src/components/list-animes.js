@@ -3,6 +3,7 @@ import axios from "axios";
 import Table from "./table";
 import "./list-animes.css";
 import Select from "react-select";
+import "../../node_modules/font-awesome/css/font-awesome.min.css";
 
 export default function Animes() {
   const columns = useMemo(
@@ -54,7 +55,6 @@ export default function Animes() {
   const [first, setFirst] = useState({ value: null, status: true });
   const [count, setCount] = useState(0);
   const [yearsList, setYearsList] = useState([]);
-  const [selectedYear, setSelectedYear] = useState();
   const generateArrayOfYears = () => {
     var max = new Date().getFullYear();
     var min = max - 50;
@@ -100,7 +100,17 @@ export default function Animes() {
     <div className="App ">
       <h3>{count} Results</h3>
 
-      <input onChange={handleFilterChange} placeholder={"Search name test"} />
+      <div className="search-box">
+        <button className="btn-search">
+          <i className="fa fa-search fa-search "></i>
+        </button>
+        <input
+          onChange={handleFilterChange}
+          type="text"
+          className="input-search"
+          placeholder="Type to Search..."
+        ></input>
+      </div>
 
       <Select
         className="basic-single"

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { useFilters, useTable,useSortBy } from "react-table";
+import { useFilters, useTable, useSortBy } from "react-table";
 import "./table.css";
+import axios from "axios";
 
 export default function Table({ columns, data }) {
   // Use the useTable Hook to send the columns and data to build the table
@@ -17,14 +18,17 @@ export default function Table({ columns, data }) {
       data,
     },
     useFilters,
-    useSortBy,
+    useSortBy
   );
 
   const [filterInput, setFilterInput] = useState("");
+  useState(`https://kitsu.io/api/edge/anime?filter[text]=cowboy%20bebop
+  `);
 
   // Update the state when input changes
   const handleFilterChange = (e) => {
     const value = e.target.value || undefined;
+    console.log(value);
     setFilter("attributes.titles.en_jp", value); // Update the show.name filter. Now our table will filter and show only the rows which have a matching value
     setFilterInput(value);
   };
@@ -35,11 +39,7 @@ export default function Table({ columns, data }) {
   */
   return (
     <>
-      <input
-        value={filterInput}
-        onChange={handleFilterChange}
-        placeholder={"Search name"}
-      />
+ 
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (

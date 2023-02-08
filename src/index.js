@@ -1,38 +1,32 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-
-import { createRoot } from "react-dom/client";
-import Animes from "./components/list-animes.js"
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
+import Animes from "./components/list-animes.js";
+import Anime from "./components/details-anime";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Provider } from "react-redux";
+import store from "./components/store/index";
+import FavsAnimes from "./components/favs-animes";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-     <Animes/>
-    ),
+    element: <Animes />,
   },
   {
-    path: "about",
-    element: <div>About</div>,
+    path: "/favorites",
+    element: <FavsAnimes />,
   },
 ]);
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
-
-
-
-
 root.render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+  <Provider store={store}>
+    <React.StrictMode>
+      <RouterProvider router={router} />
+    </React.StrictMode>
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

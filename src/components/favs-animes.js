@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./favs-animes.css";
-import Animes from "./list-animes";
+import Rating from "@mui/material/Rating";
+import { FaTrash } from "react-icons/fa";
 
 export default function FavsAnimes() {
   const existingFavs = JSON.parse(localStorage.getItem("favs") || "[]"); // animes from local storage
@@ -20,6 +21,10 @@ export default function FavsAnimes() {
   };
   const [favsChanged, setFavsChanged] = useState(false);
   useEffect(() => {}, [favsChanged]);
+  const getRating = (anime) => {
+    const rating = anime.attributes.averageRating;
+    return (rating * 5) / 100;
+  };
 
   return (
     <>
@@ -32,10 +37,7 @@ export default function FavsAnimes() {
                   <div className="first">
                     <div className="d-flex justify-content-between align-items-center">
                       <span className="discount">
-                        {anime.attributes.ratingRank}
-                      </span>
-                      <span className="wishlist">
-                        <i className="fa fa-heart-o"></i>
+                        {anime.attributes.subtype}
                       </span>
                     </div>
                   </div>
@@ -53,72 +55,65 @@ export default function FavsAnimes() {
                     </h5>
 
                     <div className="d-flex flex-column mb-2">
-                      <div>{anime.attributes.averageRating}</div>
+                      <div>
+                        <i className="fa fa-star-o rating-star"></i>
+                        <span className="rating-number">
+                          {anime.attributes.averageRating}
+                        </span>
+                      </div>{" "}
                     </div>
                   </div>
 
-                  <div className="d-flex justify-content-between align-items-center pt-1">
+                  <div className="d-flex justify-content-between align-items-center">
                     <div className="color-select d-flex ">
-                      <input
-                        type="button"
-                        name="grey"
-                        className="btnFavs creme"
-                      ></input>
-                      <input
-                        type="button"
-                        name="red"
-                        className="btnFavs red ml-2"
-                      ></input>
-                      <input
-                        type="button"
-                        name="blue"
-                        className="btnFavs blue ml-2"
-                      ></input>
-                    </div>
-
-                    <div className="d-flex ">
-                      <span className="item-size mr-2 btnFavs" type="button">
-                        S
-                      </span>
-                      <span className="item-size mr-2 btnFavs" type="button">
-                        M
-                      </span>
-                      <span className="item-size btnFavs" type="button">
-                        L
-                      </span>
+                      <div
+                        class="row row-cols-12 row-cols-lg-12 g-12 g-lg-12"
+                        style={{ maxWidth: "2%", maxHeight: "1px" }}
+                      >
+                        <Rating
+                          name="half-rating-read"
+                          defaultValue={getRating(anime)}
+                          precision={0.1}
+                          readOnly
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  <div className="d-flex justify-content-between align-items-center pt-1">
+                  <div className="d-flex justify-content-between align-items-center pt-4">
                     <div>
-                      <i className="fa fa-star-o rating-star"></i>
                       <span className="rating-number">
-                        {anime.attributes.averageRating}
+                        {anime.attributes.startDate}
                       </span>
                     </div>
 
-                    <span className="buy">{anime.attributes.subtype}</span>
+                    <span className="buy">
+                      Rang: {anime.attributes.ratingRank}
+                    </span>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-3">
+              <div className="mt-1">
                 <div className=" voutchers">
                   <div className="voutcher-divider">
-                    <div className="voutcher-left text-center">
-                      <button
-                        className="btn btn-link"
-                        onClick={() => {
-                          removeFromFavs(anime);
-                        }}
-                      >
-                        Retirer
-                      </button>
-                    </div>
-                    <div className="voutcher-right text-center border-left">
-                      <h5 className="discount-percent">20%</h5>
-                      <span className="off">Off</span>
-                    </div>
+                    <button
+                      type="button"
+                      className="btn btn-outline-dark"
+                      data-mdb-ripple-color="dark"
+                      style={{
+                        zIndex: "1",
+                        justifyContent: "center",
+                        display: "flex",
+                      }}
+                      icon="fa-solid fa-arrow-right-to-bracket"
+                      onClick={() => {
+                        removeFromFavs(anime);
+                      }}
+                    >
+                      Retirer des favoris
+                      <FaTrash />
+                    </button>
                   </div>
                 </div>
               </div>

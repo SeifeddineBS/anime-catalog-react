@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./details-anime.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { format, render, cancel, register } from "timeago.js";
+import { format } from "timeago.js";
 import { detailsActions } from "./store/details-slice";
 
 export default function Anime() {

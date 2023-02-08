@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, CSSProperties } from "react";
 import axios from "axios";
 import Table from "./table";
 import "./list-animes.css";
@@ -7,6 +7,8 @@ import "../../node_modules/font-awesome/css/font-awesome.min.css";
 import Anime from "./details-anime";
 import { useDispatch, useSelector } from "react-redux";
 import { detailsActions } from "./store/details-slice";
+import clipboard from "react-spinners/ClipLoader";
+import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 
 export default function Animes() {
   const columns = useMemo(
@@ -46,7 +48,7 @@ export default function Animes() {
             Cell: ({ row }) => (
               <button
                 className="btn btn-link"
-                style={{color:"white"}}
+                style={{ color: "white" }}
                 onClick={(e) => goToAnimeDetails(row)}
               >
                 Voir plus
@@ -70,10 +72,18 @@ export default function Animes() {
   const [last, setLast] = useState({ value: null, status: true });
   const [first, setFirst] = useState({ value: null, status: true });
   const [count, setCount] = useState(0);
-  const [yearsList, setYearsList] = useState([]);
-  const dispatch = useDispatch();
-  // when clicked to details go to movie details
+  const [loading, setLoading] = useState(false);
 
+  const [yearsList, setYearsList] = useState([]);
+  const [ageRatingList, setAgeRatingList] = useState([]);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
   const generateArrayOfYears = () => {
     var max = new Date().getFullYear();
     var min = max - 50;
@@ -86,6 +96,16 @@ export default function Animes() {
   };
   useEffect(() => {
     setYearsList(generateArrayOfYears());
+    let array = [
+      { value: "G", label: "General Audiences" },
+      {
+        value: "PG",
+        label: "Parental Guidance Suggested",
+      },
+      { value: "R", label: "Restricted" },
+      { value: "R18", label: "Explicit" },
+    ];
+    setAgeRatingList(array);
   }, []);
 
   // Using useEffect to call the API once mounted and set the data
@@ -93,7 +113,6 @@ export default function Animes() {
     (async () => {
       const result = await axios(url);
 
-      console.log(url);
       setData(result.data.data);
       setCount(result.data.meta.count);
       setNext({ value: result.data.links.next, status: true });
@@ -109,9 +128,14 @@ export default function Animes() {
     const value = e.target.value || undefined;
     setUrl(`https://kitsu.io/api/edge/anime?filter[text]=${value}`);
   };
-  const handleChange = (selectedOption) => {
+  const handleChangeYears = (selectedOption) => {
     setUrl(
       `https://kitsu.io/api/edge/anime?filter[year]=${selectedOption.value}`
+    );
+  };
+  const handleChangeRating = (selectedOption) => {
+    setUrl(
+      `https://kitsu.io/api/edge/anime?filter[ageRating]=${selectedOption.value}`
     );
   };
   const goToAnimeDetails = async (row) => {
@@ -125,73 +149,114 @@ export default function Animes() {
   };
 
   return (
-    <>
-      {!showDetails ? (
-        <div className="App ">
-          <h3>{count} Results</h3>
-
-          <div className="search-box">
-            <button className="btn-search">
-              <i className="fa fa-search fa-search "></i>
-            </button>
-            <input
-              onChange={handleFilterChange}
-              type="text"
-              className="input-search"
-              placeholder="Type to Search..."
-            ></input>
+    <div className="App ">
+      {loading ? (
+        <>
+          <div
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            <ClimbingBoxLoader
+              color={"#acadd0"}
+              loading={loading}
+              size={50}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
           </div>
-
-          <Select
-            className="basic-single"
-            classNamePrefix="select"
-            defaultValue={yearsList[0]}
-            isDisabled={false}
-            isLoading={false}
-            isClearable={true}
-            isRtl={false}
-            isSearchable={false}
-            name="color"
-            options={yearsList}
-            onChange={handleChange}
-          />
-          <Table columns={columns} data={data} />
-          <div className="button-container">
-            <div className="btn">
-              <a
-                onClick={() => {
-                  setUrl(first);
-                }}
-              >
-                First
-              </a>
-            </div>
-            {next.status && (
-              <div className="btn">
-                <a
-                  onClick={() => {
-                    setUrl(next.value);
-                  }}
-                >
-                  Next
-                </a>
-              </div>
-            )}
-
-            <div className="btn">
-              <a
-                onClick={() => {
-                  setUrl(last);
-                }}
-              >
-                Last
-              </a>
-            </div>
-          </div>
-        </div>
+        </>
       ) : (
-        <Anime />
+        <>
+          {!showDetails ? (
+            <>
+              <h3>{count} Résultats</h3>
+              <div className="bar">
+                <div className="search-box">
+                  <button className="btn-search">
+                    <i className="fa fa-search fa-search "></i>
+                  </button>
+                  <input
+                    onChange={handleFilterChange}
+                    type="text"
+                    className="input-search"
+                    placeholder="Type to Search..."
+                    style={{ flexGrow: "1" }}
+                  ></input>
+                </div>
+
+                <Select
+                  className="basic-single"
+                  classNamePrefix="select"
+                  defaultValue={yearsList[0]}
+                  isDisabled={false}
+                  isLoading={false}
+                  isClearable={true}
+                  isRtl={false}
+                  isSearchable={false}
+                  name="color"
+                  options={yearsList}
+                  onChange={handleChangeYears}
+                  style={{ flexGrow: "8" }}
+                />
+
+                <Select
+                  className="basic-single"
+                  classNamePrefix="select"
+                  defaultValue={ageRatingList[0]}
+                  isDisabled={false}
+                  isLoading={false}
+                  isClearable={true}
+                  isRtl={false}
+                  isSearchable={false}
+                  name="color"
+                  options={ageRatingList}
+                  onChange={handleChangeRating}
+                  style={{ flexGrow: "8" }}
+                />
+              </div>
+              <Table columns={columns} data={data} />
+              <div className="button-container">
+                <div className="btn">
+                  <a
+                    onClick={() => {
+                      setUrl(first);
+                    }}
+                  >
+                    First
+                  </a>
+                </div>
+                {next.status && (
+                  <div className="btn">
+                    <a
+                      onClick={() => {
+                        setUrl(next.value);
+                      }}
+                    >
+                      Next
+                    </a>
+                  </div>
+                )}
+
+                <div className="btn">
+                  <a
+                    onClick={() => {
+                      setUrl(last);
+                    }}
+                  >
+                    Last
+                  </a>
+                </div>
+              </div>
+            </>
+          ) : (
+            <Anime />
+          )}
+        </>
       )}
-    </>
+    </div>
   );
 }

@@ -1,5 +1,3 @@
-
-
 .containerFavs {
     width: 900px;
 }
@@ -251,4 +249,10 @@
     font-size: 14px;
     position: relative;
     bottom: 5px;
+}
+
+.starRatings {
+    color: #eee;
+    height: 10%;
+    width: 2px;
 }

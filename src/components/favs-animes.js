@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./favs-animes.css";
+import "./favs-animes.scss";
 import Rating from "@mui/material/Rating";
 import { FaTrash } from "react-icons/fa";
 
@@ -7,7 +7,6 @@ export default function FavsAnimes() {
   const existingFavs = JSON.parse(localStorage.getItem("favs") || "[]"); // animes from local storage
 
   const removeFromFavs = (anime) => {
-    let exist = false;
     // add a anime
     existingFavs.forEach((element, index) => {
       if (element.id === anime.id) {
@@ -28,10 +27,17 @@ export default function FavsAnimes() {
 
   return (
     <>
+      <div className="centerDiv">
+        <div className="cut-text">Mes favorites</div>
+      </div>
+
       <div className="containerFavs mt-5">
         <div className="row">
           {existingFavs.map((anime) => (
-            <div className="col-md-3">
+            <div
+              className="col-md-3 mt-3 p-3"
+              style={{ display: "flex", flexWrap: "wrap" }}
+            >
               <div className="cardFavs">
                 <div className="image-containerFavs">
                   <div className="first">
@@ -45,6 +51,7 @@ export default function FavsAnimes() {
                   <img
                     src={anime.attributes.posterImage.small}
                     className="img-fluid rounded thumbnail-image"
+                    alt={anime.attributes.en_jp}
                   ></img>
                 </div>
 
@@ -67,7 +74,7 @@ export default function FavsAnimes() {
                   <div className="d-flex justify-content-between align-items-center">
                     <div className="color-select d-flex ">
                       <div
-                        class="row row-cols-12 row-cols-lg-12 g-12 g-lg-12"
+                        className="row row-cols-12 row-cols-lg-12 g-12 g-lg-12"
                         style={{ maxWidth: "2%", maxHeight: "1px" }}
                       >
                         <Rating
@@ -111,8 +118,19 @@ export default function FavsAnimes() {
                         removeFromFavs(anime);
                       }}
                     >
-                      Retirer des favoris
-                      <FaTrash />
+                      <div style={{ position: "relative" }}>
+                        <div> Retirer des favoris</div>
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "45%",
+                            left: "120%",
+                            transform: "translate(-50%, -50%)",
+                          }}
+                        >
+                          <FaTrash />
+                        </div>
+                      </div>
                     </button>
                   </div>
                 </div>

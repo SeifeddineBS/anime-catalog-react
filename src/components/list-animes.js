@@ -1,13 +1,12 @@
-import React, { useEffect, useState, useMemo, CSSProperties } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import Table from "./table";
-import "./list-animes.css";
+import "./list-animes.scss";
 import Select from "react-select";
 import "../../node_modules/font-awesome/css/font-awesome.min.css";
 import Anime from "./details-anime";
 import { useDispatch, useSelector } from "react-redux";
 import { detailsActions } from "./store/details-slice";
-import clipboard from "react-spinners/ClipLoader";
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 
 export default function Animes() {
@@ -149,7 +148,7 @@ export default function Animes() {
   };
 
   return (
-    <div className="App ">
+    <div className="App mt-5">
       {loading ? (
         <>
           <div
@@ -173,7 +172,6 @@ export default function Animes() {
         <>
           {!showDetails ? (
             <>
-              <h3>{count} Résultats</h3>
               <div className="bar">
                 <div className="search-box">
                   <button className="btn-search">
@@ -217,40 +215,88 @@ export default function Animes() {
                   onChange={handleChangeRating}
                   style={{ flexGrow: "8" }}
                 />
+                <h3 style={{ fontFamily: "monospace" }}>{count} Résultats</h3>
               </div>
               <Table columns={columns} data={data} />
-              <div className="button-container">
-                <div className="btn">
-                  <a
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                className="pagination:container mt-2 p-3"
+              >
+                <div className="pagination:number arrow">
+                  <svg width="18" height="18">
+                    <use href="#left" />
+                  </svg>
+                  <span
                     onClick={() => {
                       setUrl(first);
                     }}
+                    className="arrow:text"
                   >
-                    First
-                  </a>
+                    Debut
+                  </span>
                 </div>
                 {next.status && (
-                  <div className="btn">
-                    <a
+                  <div className="pagination:number arrow">
+                    <span
                       onClick={() => {
                         setUrl(next.value);
                       }}
+                      className="arrow:text"
                     >
-                      Next
-                    </a>
+                      Suivant
+                    </span>
                   </div>
                 )}
-
-                <div className="btn">
-                  <a
+                <div className="pagination:number arrow">
+                  <svg width="18" height="18">
+                    <use href="#right" />
+                  </svg>
+                  <span
                     onClick={() => {
                       setUrl(last);
                     }}
+                    className="arrow:text"
                   >
-                    Last
-                  </a>
+                    Fin
+                  </span>
                 </div>
               </div>
+
+              <svg className="hide">
+                <symbol
+                  id="left"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 19l-7-7 7-7"
+                  ></path>
+                </symbol>
+                <symbol
+                  id="right"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  ></path>
+                </symbol>
+              </svg>
             </>
           ) : (
             <Anime />

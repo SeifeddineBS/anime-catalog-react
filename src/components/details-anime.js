@@ -1,18 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "./details-anime.css";
+import "./details-anime.scss";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { format } from "timeago.js";
+import { FaTrash } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
+
 import { detailsActions } from "./store/details-slice";
 
 export default function Anime() {
   const data = useSelector((state) => state.details.anime); // get anime clicked from the store
-  const [anime, setAnime] = useState(data.data.data);
+  const [anime] = useState(data.data.data);
   const [existFavs, setExistFavs] = useState(false);
   const dispatch = useDispatch();
 
   var coverStyle = {
-    backgroundImage: "url(" + anime.attributes.coverImage.small + ")",
+    backgroundImage: anime.attributes.coverImage
+      ? "url(" + anime.attributes.coverImage.small + ")"
+      : "../../public/default-placeholder-cover.png",
+
+    height: "350px",
+  };
+  var defaultCoverStyle = {
+    backgroundImage: "url(../../public/default-placeholder.png)",
     height: "350px",
   };
   const existingFavs = JSON.parse(localStorage.getItem("favs") || "[]"); // animes from local storage
@@ -33,7 +43,6 @@ export default function Anime() {
     }
   };
   const removeFromFavs = () => {
-    let exist = false;
     // add a anime
     existingFavs.forEach((element, index) => {
       if (element.id === anime.id) {
@@ -77,22 +86,44 @@ export default function Anime() {
                     >
                       Retour
                     </button>
+                    {anime.attributes.posterImage ? (
+                      <img
+                        src={anime.attributes.posterImage.small}
+                        alt={anime.attributes.en_jp}
+                        className="img-fluid img-thumbnail mt-4 mb-2"
+                        style={{ width: "200px", zIndex: "1" }}
+                      ></img>
+                    ) : (
+                      <img
+                        src="../../public/default-placeholder.png"
+                        alt={anime.attributes.en_jp}
+                        className="img-fluid img-thumbnail mt-4 mb-2"
+                        style={{ width: "200px", zIndex: "1" }}
+                      ></img>
+                    )}
 
-                    <img
-                      src={anime.attributes.posterImage.small}
-                      alt="Generic placeholder image"
-                      className="img-fluid img-thumbnail mt-4 mb-2"
-                      style={{ width: "200px", zIndex: "1" }}
-                    ></img>
                     {!existFavs ? (
                       <button
                         type="button"
-                        className="btn btn-outline-dark"
+                        className="btn btn-outline-danger"
                         data-mdb-ripple-color="dark"
                         style={{ zIndex: "1" }}
                         onClick={addToFavs}
                       >
-                        Ajouter aux favoris
+                        <div className="row" style={{ position: "relative" }}>
+                          <div className="col-md-10">Ajouter aux favoris</div>
+                          <div
+                            className="col-md-1"
+                            style={{
+                              position: "absolute",
+                              top: "45%",
+                              left: "80%",
+                              transform: "translate(-50%, -50%)",
+                            }}
+                          >
+                            <FaHeart />
+                          </div>
+                        </div>
                       </button>
                     ) : (
                       <button
@@ -102,7 +133,20 @@ export default function Anime() {
                         style={{ zIndex: "1" }}
                         onClick={removeFromFavs}
                       >
-                        Retirer des favoris
+                        <div className="row" style={{ position: "relative" }}>
+                          <div className="col-md-10"> Retirer des favoris</div>
+                          <div
+                            className="col-md-1"
+                            style={{
+                              position: "absolute",
+                              top: "45%",
+                              left: "80%",
+                              transform: "translate(-50%, -50%)",
+                            }}
+                          >
+                            <FaTrash />
+                          </div>
+                        </div>
                       </button>
                     )}
                   </div>
@@ -119,7 +163,12 @@ export default function Anime() {
                 >
                   <div className="d-flex justify-content-end text-center py-1">
                     <div>
-                      <p className="mb-1 h5">{anime.attributes.ratingRank}</p>
+                      {anime.attributes.ratingRank ? (
+                        <p className="mb-1 h5">{anime.attributes.ratingRank}</p>
+                      ) : (
+                        <p className="mb-1 h5">NB</p>
+                      )}
+
                       <p className="small text-muted mb-0">Rang</p>
                     </div>
                     <div className="px-3">
@@ -155,14 +204,14 @@ export default function Anime() {
                     <div className="col mb-2">
                       <img
                         src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(112).webp"
-                        alt="image 1"
+                        alt=""
                         className="w-100 rounded-3"
                       ></img>
                     </div>
                     <div className="col mb-2">
                       <img
                         src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(107).webp"
-                        alt="image 1"
+                        alt=""
                         className="w-100 rounded-3"
                       ></img>
                     </div>
@@ -171,14 +220,14 @@ export default function Anime() {
                     <div className="col">
                       <img
                         src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(108).webp"
-                        alt="image 1"
+                        alt=""
                         className="w-100 rounded-3"
                       ></img>
                     </div>
                     <div className="col">
                       <img
                         src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
-                        alt="image 1"
+                        alt=""
                         className="w-100 rounded-3"
                       ></img>
                     </div>

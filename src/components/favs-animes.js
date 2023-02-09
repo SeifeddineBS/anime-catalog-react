@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import "./favs-animes.scss";
 import Rating from "@mui/material/Rating";
 import { FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export default function FavsAnimes() {
+  const navigate = useNavigate();
+
   const existingFavs = JSON.parse(localStorage.getItem("favs") || "[]"); // animes from local storage
 
   const removeFromFavs = (anime) => {
@@ -31,10 +34,15 @@ export default function FavsAnimes() {
         <div className="cut-text">Mes favorites</div>
       </div>
 
+      <button className="btn btn-link" onClick={(e) => navigate("/")}>
+        Acceuil
+      </button>
+
       <div className="containerFavs mt-5">
         <div className="row">
           {existingFavs.map((anime) => (
             <div
+              key={anime.id}
               className="col-md-3 mt-3 p-3"
               style={{ display: "flex", flexWrap: "wrap" }}
             >

@@ -8,8 +8,11 @@ import Anime from "./details-anime";
 import { useDispatch, useSelector } from "react-redux";
 import { detailsActions } from "./store/details-slice";
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
+import { useNavigate } from "react-router-dom";
 
 export default function Animes() {
+  const navigate = useNavigate();
+
   const columns = useMemo(
     () => [
       {
@@ -63,6 +66,8 @@ export default function Animes() {
   // data state to store the TV Maze API data. Its initial value is an empty array
   const [data, setData] = useState([]);
   const showDetails = useSelector((state) => state.details.showDetails); // verify if favorites button is clicked or not to show favs
+  const [details, setDetails] = useState(showDetails);
+  const [favoris, setFavoris] = useState(false);
 
   const [url, setUrl] = useState(
     `https://kitsu.io/api/edge/anime?page%5Blimit%5D=10&page%5Boffset%5D=0`
@@ -125,7 +130,11 @@ export default function Animes() {
 
   const handleFilterChange = (e) => {
     const value = e.target.value || undefined;
-    setUrl(`https://kitsu.io/api/edge/anime?filter[text]=${value}`);
+    if (value) setUrl(`https://kitsu.io/api/edge/anime?filter[text]=${value}`);
+    else
+      setUrl(
+        `https://kitsu.io/api/edge/anime?page%5Blimit%5D=10&page%5Boffset%5D=0`
+      );
   };
   const handleChangeYears = (selectedOption) => {
     setUrl(
@@ -145,10 +154,12 @@ export default function Animes() {
 
     dispatch(detailsActions.setShowDetails(true)); // let the variable to true to know that a movie is clicked and show it
     dispatch(detailsActions.showDetails(result)); // update the movie clicked
+
+    setDetails(true);
   };
 
   return (
-    <div className="App mt-5">
+    <>
       {loading ? (
         <>
           <div
@@ -170,54 +181,79 @@ export default function Animes() {
         </>
       ) : (
         <>
-          {!showDetails ? (
+          {!details ? (
             <>
-              <div className="bar">
-                <div className="search-box">
-                  <button className="btn-search">
-                    <i className="fa fa-search fa-search "></i>
+              <div className="App mt-5">
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                  <div className="lead fw-normal mb-0">
+                    <div className="bar">
+                      <div className="search-box">
+                        <button className="btn-search">
+                          <i className="fa fa-search fa-search "></i>
+                        </button>
+                        <input
+                          onChange={handleFilterChange}
+                          type="text"
+                          className="input-search"
+                          placeholder="Type to Search..."
+                          style={{ flexGrow: "1" }}
+                        ></input>
+                      </div>
+
+                      <Select
+                        className="basic-single"
+                        classNamePrefix="select"
+                        defaultValue={yearsList[0]}
+                        isDisabled={false}
+                        isLoading={false}
+                        isClearable={true}
+                        isRtl={false}
+                        isSearchable={false}
+                        name="color"
+                        options={yearsList}
+                        onChange={handleChangeYears}
+                        style={{ flexGrow: "8" }}
+                      />
+
+                      <Select
+                        className="basic-single"
+                        classNamePrefix="select"
+                        defaultValue={ageRatingList[0]}
+                        isDisabled={false}
+                        isLoading={false}
+                        isClearable={true}
+                        isRtl={false}
+                        isSearchable={false}
+                        name="color"
+                        options={ageRatingList}
+                        onChange={handleChangeRating}
+                        style={{ flexGrow: "8" }}
+                      />
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-outline-light"
+                    data-mdb-ripple-color="dark"
+                    style={{
+                      zIndex: "1",
+                      justifyContent: "center",
+                      display: "flex",
+                    }}
+                    icon="fa-solid fa-arrow-right-to-bracket"
+                    onClick={(e) => navigate("/favorites")}
+                  >
+                    <div style={{ position: "relative" }}>
+                      <div> Voir favoris</div>
+                    </div>
                   </button>
-                  <input
-                    onChange={handleFilterChange}
-                    type="text"
-                    className="input-search"
-                    placeholder="Type to Search..."
-                    style={{ flexGrow: "1" }}
-                  ></input>
+
+                  <h3 className="mb-0" style={{ fontFamily: "monospace" }}>
+                    {count} Résultats
+                  </h3>
                 </div>
-
-                <Select
-                  className="basic-single"
-                  classNamePrefix="select"
-                  defaultValue={yearsList[0]}
-                  isDisabled={false}
-                  isLoading={false}
-                  isClearable={true}
-                  isRtl={false}
-                  isSearchable={false}
-                  name="color"
-                  options={yearsList}
-                  onChange={handleChangeYears}
-                  style={{ flexGrow: "8" }}
-                />
-
-                <Select
-                  className="basic-single"
-                  classNamePrefix="select"
-                  defaultValue={ageRatingList[0]}
-                  isDisabled={false}
-                  isLoading={false}
-                  isClearable={true}
-                  isRtl={false}
-                  isSearchable={false}
-                  name="color"
-                  options={ageRatingList}
-                  onChange={handleChangeRating}
-                  style={{ flexGrow: "8" }}
-                />
-                <h3 style={{ fontFamily: "monospace" }}>{count} Résultats</h3>
+                <Table columns={columns} data={data} />
               </div>
-              <Table columns={columns} data={data} />
 
               <div
                 style={{
@@ -276,9 +312,9 @@ export default function Animes() {
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M15 19l-7-7 7-7"
                   ></path>
                 </symbol>
@@ -290,19 +326,19 @@ export default function Animes() {
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M9 5l7 7-7 7"
                   ></path>
                 </symbol>
               </svg>
             </>
           ) : (
-            <Anime />
+            <Anime setDetails={setDetails} />
           )}
         </>
       )}
-    </div>
+    </>
   );
 }

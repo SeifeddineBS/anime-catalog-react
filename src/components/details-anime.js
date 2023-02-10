@@ -8,7 +8,6 @@ import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 import { MdKeyboardReturn } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
-import axios from "axios";
 
 import { detailsActions } from "./store/details-slice";
 

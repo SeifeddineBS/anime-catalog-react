@@ -185,7 +185,7 @@ export default function Animes() {
         <div>
           {!details ? (
             <div className="container  mt-5">
-              <div className="App mt-5">
+              <div className="App ">
                 <div className="d-flex justify-content-between align-items-center mb-4">
                   <div className="lead fw-normal mb-0">
                     <div className="bar">

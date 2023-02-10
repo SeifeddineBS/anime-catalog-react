@@ -1,0 +1,33 @@
+img{
+    max-width: 100%;
+    height: auto;
+        display: block;
+    background-repeat: no-repeat;
+
+}
+.containerDetails{
+    margin: 0 auto;
+  
+
+
+
+}
+.react-transform-component {
+    width: unset !important;
+    height: unset !important;
+}
+
+.mediaQuery{
+    margin-left: 15%;
+}
+@media (max-width: 1400px) {
+    .mediaQuery {
+        margin-left: 18%;
+
+    }}
+    @media (min-width: 1000px) {
+        .mediaQuery {
+            margin-left: 23%;
+    
+        }}
+

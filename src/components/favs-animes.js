@@ -2,10 +2,17 @@ import React, { useEffect, useState } from "react";
 import "./favs-animes.scss";
 import Rating from "@mui/material/Rating";
 import { FaTrash } from "react-icons/fa";
+import { MdKeyboardReturn } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { detailsActions } from "./store/details-slice";
 
 export default function FavsAnimes() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(detailsActions.setShowDetails(false));
+  });
 
   const existingFavs = JSON.parse(localStorage.getItem("favs") || "[]"); // animes from local storage
 
@@ -30,20 +37,36 @@ export default function FavsAnimes() {
 
   return (
     <>
-      <div className="centerDiv">
-        <div className="cut-text">Mes favorites</div>
-      </div>
-
-      <button className="btn btn-link" onClick={(e) => navigate("/")}>
-        Acceuil
-      </button>
-
       <div className="containerFavs mt-5">
+        <div className="centerDiv">
+          <div className="cut-text">Mes favorites</div>
+        </div>
+        <button
+          type="button"
+          className="btn btn-outline-light"
+          data-mdb-ripple-color="dark"
+          style={{
+            zIndex: "1",
+            justifyContent: "center",
+            display: "flex",
+          }}
+          icon="fa-solid fa-arrow-right-to-bracket"
+          onClick={(e) => navigate("/")}
+        >
+          <div
+            className="row d-inline-flex align-items-center"
+            style={{ color: "red" }}
+          >
+            <div className="my-0 pr-1">
+              <MdKeyboardReturn className="mb-1" />
+            </div>
+          </div>
+        </button>
         <div className="row">
           {existingFavs.map((anime) => (
             <div
               key={anime.id}
-              className="col-md-3 mt-3 p-3"
+              className="col-md-4 mt-4 p-4"
               style={{ display: "flex", flexWrap: "wrap" }}
             >
               <div className="cardFavs">
@@ -102,44 +125,13 @@ export default function FavsAnimes() {
                       </span>
                     </div>
 
-                    <span className="buy">
-                      Rang: {anime.attributes.ratingRank}
+                    <span className="buy" style={{ color: "black" }}>
+                      <FaTrash
+                        onClick={() => {
+                          removeFromFavs(anime);
+                        }}
+                      />
                     </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-1">
-                <div className=" voutchers">
-                  <div className="voutcher-divider">
-                    <button
-                      type="button"
-                      className="btn btn-outline-dark"
-                      data-mdb-ripple-color="dark"
-                      style={{
-                        zIndex: "1",
-                        justifyContent: "center",
-                        display: "flex",
-                      }}
-                      icon="fa-solid fa-arrow-right-to-bracket"
-                      onClick={() => {
-                        removeFromFavs(anime);
-                      }}
-                    >
-                      <div style={{ position: "relative" }}>
-                        <div> Retirer des favoris</div>
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: "45%",
-                            left: "120%",
-                            transform: "translate(-50%, -50%)",
-                          }}
-                        >
-                          <FaTrash />
-                        </div>
-                      </div>
-                    </button>
                   </div>
                 </div>
               </div>

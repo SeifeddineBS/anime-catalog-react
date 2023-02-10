@@ -9,6 +9,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { detailsActions } from "./store/details-slice";
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 import { useNavigate } from "react-router-dom";
+import { FaHeart } from "react-icons/fa";
+import { AiOutlineArrowLeft } from "react-icons/ai";
+import { AiOutlineArrowRight } from "react-icons/ai";
 
 export default function Animes() {
   const navigate = useNavigate();
@@ -67,7 +70,6 @@ export default function Animes() {
   const [data, setData] = useState([]);
   const showDetails = useSelector((state) => state.details.showDetails); // verify if favorites button is clicked or not to show favs
   const [details, setDetails] = useState(showDetails);
-  const [favoris, setFavoris] = useState(false);
 
   const [url, setUrl] = useState(
     `https://kitsu.io/api/edge/anime?page%5Blimit%5D=10&page%5Boffset%5D=0`
@@ -86,7 +88,7 @@ export default function Animes() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-    }, 1000);
+    }, 500);
   }, []);
   const generateArrayOfYears = () => {
     var max = new Date().getFullYear();
@@ -159,7 +161,7 @@ export default function Animes() {
   };
 
   return (
-    <>
+    <div>
       {loading ? (
         <>
           <div
@@ -180,13 +182,31 @@ export default function Animes() {
           </div>
         </>
       ) : (
-        <>
+        <div>
           {!details ? (
-            <>
+            <div className="container  mt-5">
               <div className="App mt-5">
                 <div className="d-flex justify-content-between align-items-center mb-4">
                   <div className="lead fw-normal mb-0">
                     <div className="bar">
+                      <button
+                        type="button"
+                        className="btn btn-outline-light"
+                        data-mdb-ripple-color="dark"
+                        style={{
+                          zIndex: "1",
+                          justifyContent: "center",
+                          display: "flex",
+                        }}
+                        icon="fa-solid fa-arrow-right-to-bracket"
+                        onClick={(e) => navigate("/favorites")}
+                      >
+                        <div className="row d-inline-flex align-items-center">
+                          <div className="my-0 pr-1">
+                            <FaHeart className="mb-1" />
+                          </div>
+                        </div>
+                      </button>
                       <div className="search-box">
                         <button className="btn-search">
                           <i className="fa fa-search fa-search "></i>
@@ -231,28 +251,19 @@ export default function Animes() {
                       />
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    className="btn btn-outline-light"
-                    data-mdb-ripple-color="dark"
-                    style={{
-                      zIndex: "1",
-                      justifyContent: "center",
-                      display: "flex",
-                    }}
-                    icon="fa-solid fa-arrow-right-to-bracket"
-                    onClick={(e) => navigate("/favorites")}
-                  >
-                    <div style={{ position: "relative" }}>
-                      <div> Voir favoris</div>
-                    </div>
-                  </button>
 
                   <h3 className="mb-0" style={{ fontFamily: "monospace" }}>
                     {count} Résultats
                   </h3>
                 </div>
-                <Table columns={columns} data={data} />
+                <div
+                  style={{
+                    justifyContent: "center",
+                    display: "flex",
+                  }}
+                >
+                  <Table columns={columns} data={data} />
+                </div>
               </div>
 
               <div
@@ -264,17 +275,11 @@ export default function Animes() {
                 className="pagination:container mt-2 p-3"
               >
                 <div className="pagination:number arrow">
-                  <svg width="18" height="18">
-                    <use href="#left" />
-                  </svg>
-                  <span
+                  <AiOutlineArrowLeft
                     onClick={() => {
                       setUrl(first);
                     }}
-                    className="arrow:text"
-                  >
-                    Debut
-                  </span>
+                  />
                 </div>
                 {next.status && (
                   <div className="pagination:number arrow">
@@ -289,56 +294,19 @@ export default function Animes() {
                   </div>
                 )}
                 <div className="pagination:number arrow">
-                  <svg width="18" height="18">
-                    <use href="#right" />
-                  </svg>
-                  <span
+                  <AiOutlineArrowRight
                     onClick={() => {
                       setUrl(last);
                     }}
-                    className="arrow:text"
-                  >
-                    Fin
-                  </span>
+                  />
                 </div>
               </div>
-
-              <svg className="hide">
-                <symbol
-                  id="left"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M15 19l-7-7 7-7"
-                  ></path>
-                </symbol>
-                <symbol
-                  id="right"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 5l7 7-7 7"
-                  ></path>
-                </symbol>
-              </svg>
-            </>
+            </div>
           ) : (
             <Anime setDetails={setDetails} />
           )}
-        </>
+        </div>
       )}
-    </>
+    </div>
   );
 }

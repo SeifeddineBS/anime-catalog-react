@@ -2,23 +2,22 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./details-anime.scss";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { format } from "timeago.js";
 import { FaTrash } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa";
-import Rating from "@mui/material/Rating";
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
-import { Button } from "@mui/material";
 import { MdKeyboardReturn } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
 
 import { detailsActions } from "./store/details-slice";
 
 export default function Anime(props) {
+  const navigate = useNavigate();
+
   const data = useSelector((state) => state.details.anime); // get anime clicked from the store
   const [anime] = useState(data.data.data);
   const [existFavs, setExistFavs] = useState(false);
-  const [animesSuggestions, setAnimesSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
@@ -30,16 +29,23 @@ export default function Anime(props) {
     }, 500);
   }, []);
 
-  const getRating = (anime) => {
-    const rating = anime.attributes.averageRating;
-    return (rating * 5) / 100;
-  };
   var coverStyle = {
     backgroundImage: anime.attributes.coverImage
       ? "url(" + anime.attributes.coverImage.small + ")"
       : "../../public/default-placeholder-cover.png",
 
     height: "350px",
+  };
+
+  const getYearFromDate = () => {
+    let date = anime.attributes.startDate;
+    for (let i = 0; date.length; i++) {
+      if (date[i] === "-") {
+        date = date.substring(0, i);
+        break;
+      }
+    }
+    return date;
   };
 
   const existingFavs = JSON.parse(localStorage.getItem("favs") || "[]"); // animes from local storage
@@ -80,31 +86,9 @@ export default function Anime(props) {
     });
   }, []);
 
-  useEffect(() => {
-    (async () => {
-      let url = `https://kitsu.io/api/edge/anime/${anime.id}/relationships/categories`;
-
-      const result = await axios(url);
-      var array = [];
-
-      result.data.data.forEach(async (element) => {
-        let secondUrl = `https://kitsu.io/api/edge/anime/${element.id}`;
-        let axiosResult = await axios(secondUrl)
-          .catch(function (error) {
-            if (error.request)
-              console.log("Anime with ID :" + element.id + " Not found");
-          })
-          .then(function success(data) {
-            if (data) array.push(data.data.data);
-          });
-      });
-      setAnimesSuggestions(array);
-      console.log(animesSuggestions);
-    })();
-  }, []);
-
   return (
     <>
+      <meta name="viewport" content="initial-scale = 1.0,maximum-scale = 1.0" />
       {loading ? (
         <>
           <div
@@ -125,7 +109,7 @@ export default function Anime(props) {
           </div>
         </>
       ) : (
-        <>
+        <div className="containerDetails">
           <div className="h-100 gradient-custom-2">
             <div>
               <div className="row d-flex justify-content-center align-items-center h-100">
@@ -139,21 +123,34 @@ export default function Anime(props) {
                         className="ms-3 mt-2 d-flex flex-column"
                         style={{ width: "200px" }}
                       >
-                        <div className=" p-3">
-                          <MdKeyboardReturn
-                            onClick={(e) => {
-                              dispatch(detailsActions.setShowDetails(true));
-                              props.setDetails(false);
-                            }}
-                          />
-                          Acceuil
-                        </div>
+                        <button
+                          type="button"
+                          className="btn btn-outline-light  mt-6 mb-5"
+                          data-mdb-ripple-color="dark"
+                          style={{
+                            zIndex: "1",
+                            justifyContent: "center",
+                            display: "flex",
+                          }}
+                          icon="fa-solid fa-arrow-right-to-bracket"
+                          onClick={(e) => {
+                            dispatch(detailsActions.setShowDetails(true));
+                            props.setDetails(false);
+                          }}
+                        >
+                          <div className="row d-inline-flex align-items-center">
+                            <div className="my-0 pr-1">
+                              <MdKeyboardReturn className="mb-1 " />
+                              Acceuil &nbsp;
+                            </div>
+                          </div>
+                        </button>
 
                         {anime.attributes.posterImage ? (
                           <img
                             src={anime.attributes.posterImage.small}
                             alt={anime.attributes.en_jp}
-                            className="img-fluid img-thumbnail mt-6 mb-3"
+                            className="img-fluid img-thumbnail mt-6 mb-1"
                             style={{ width: "200px", zIndex: "1" }}
                           ></img>
                         ) : (
@@ -194,49 +191,50 @@ export default function Anime(props) {
                             </div>
                           </button>
                         ) : (
-                          <button
-                            type="button"
-                            className="btn btn-outline-dark"
-                            data-mdb-ripple-color="dark"
-                            style={{ zIndex: "1" }}
-                            onClick={removeFromFavs}
-                          >
-                            <div
-                              className="row"
-                              style={{ position: "relative" }}
+                          <>
+                            <button
+                              type="button"
+                              className="btn btn-outline-dark"
+                              data-mdb-ripple-color="dark"
+                              style={{ zIndex: "1" }}
+                              onClick={removeFromFavs}
                             >
-                              <div className="col-md-10">
-                                {" "}
-                                Retirer des favoris
-                              </div>
                               <div
-                                className="col-md-1"
-                                style={{
-                                  position: "absolute",
-                                  top: "45%",
-                                  left: "80%",
-                                  transform: "translate(-50%, -50%)",
-                                }}
+                                className="row"
+                                style={{ position: "relative" }}
                               >
-                                <FaTrash />
+                                <div className="col-md-10">
+                                  {" "}
+                                  Retirer des favoris
+                                </div>
+                                <div
+                                  className="col-md-1"
+                                  style={{
+                                    position: "absolute",
+                                    top: "45%",
+                                    left: "80%",
+                                    transform: "translate(-50%, -50%)",
+                                  }}
+                                >
+                                  <FaTrash />
+                                </div>
                               </div>
-                            </div>
-                          </button>
+                            </button>
+                          </>
                         )}
                       </div>
                     </div>
                     <div
                       className=" text-black"
-                      style={{ backgroundColor: "#f8f9fa" }}
+                      style={{ backgroundColor: "#f1f1fc" }}
                     >
                       <div className="d-flex justify-content-between align-items-center mb-1">
                         <div
-                          className="lead fw-normal mb-1"
-                          style={{ marginLeft: "15%" }}
+                          className=" mediaQuery lead fw-normal mb-1"
                         >
                           <div
                             className="p-4 text-black"
-                            style={{ backgroundColor: "#f8f9fa" }}
+                            style={{ backgroundColor: "#f1f1fc" }}
                           >
                             <div className="d-flex text-center py-0 ">
                               <div
@@ -271,9 +269,7 @@ export default function Anime(props) {
                               <p className="small text-muted mb-0">Type</p>
                             </div>
                             <div>
-                              <p className="mb-1 h5">
-                                {format(anime.attributes.startDate)}
-                              </p>
+                              <p className="mb-1 h5">{getYearFromDate()}</p>
                               <p className="small text-muted mb-0">
                                 Date de sortie
                               </p>
@@ -288,7 +284,7 @@ export default function Anime(props) {
                         <p className="lead fw-normal mb-1">Description</p>
                         <div
                           className="p-4"
-                          style={{ backgroundColor: "#f8f9fa" }}
+                          style={{ backgroundColor: "#f1f1fc" }}
                         >
                           <p className="font-italic mb-1">
                             {anime.attributes.description}
@@ -296,95 +292,37 @@ export default function Anime(props) {
                         </div>
                       </div>
                       <div className="d-flex justify-content-between align-items-center mb-4">
-                        <p className="lead fw-normal mb-0">Suggestions</p>
                         <p className="mb-0">
-                          <a href="#!" className="text-muted">
-                            Show all
-                          </a>
-                        </p>
-                      </div>
-
-                      {animesSuggestions.map((anime) => {
-                        <>
-                          <div
-                            className="col-md-4 mt-3 p-3"
-                            style={{ display: "flex", flexWrap: "wrap" }}
+                          <button
+                            type="button"
+                            className="btn btn-outline-light"
+                            data-mdb-ripple-color="dark"
+                            style={{
+                              zIndex: "1",
+                              justifyContent: "center",
+                              display: "flex",
+                            }}
+                            icon="fa-solid fa-arrow-right-to-bracket"
+                            onClick={(e) => navigate("/favorites")}
                           >
-                            <div className="cardFavs">
-                              <div className="image-containerFavs">
-                                <div className="first">
-                                  <div className="d-flex justify-content-between align-items-center">
-                                    <span className="discount">
-                                      {anime.attributes.subtype}
-                                    </span>
-                                  </div>
-                                </div>
-
-                                <img
-                                  src={anime.attributes.posterImage.small}
-                                  className="img-fluid rounded thumbnail-image"
-                                  alt={anime.attributes.en_jp}
-                                ></img>
-                              </div>
-
-                              <div className="product-detail-containerFavs p-2">
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <h5 className="dress-name">
-                                    {anime.attributes.titles.en_jp}
-                                  </h5>
-
-                                  <div className="d-flex flex-column mb-2">
-                                    <div>
-                                      <i className="fa fa-star-o rating-star"></i>
-                                      <span className="rating-number">
-                                        {anime.attributes.averageRating}
-                                      </span>
-                                    </div>{" "}
-                                  </div>
-                                </div>
-
-                                <div className="d-flex justify-content-between align-items-center">
-                                  <div className="color-select d-flex ">
-                                    <div
-                                      className="row row-cols-12 row-cols-lg-12 g-12 g-lg-12"
-                                      style={{
-                                        maxWidth: "2%",
-                                        maxHeight: "1px",
-                                      }}
-                                    >
-                                      <Rating
-                                        name="half-rating-read"
-                                        defaultValue={getRating(anime)}
-                                        precision={0.1}
-                                        readOnly
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <div className="d-flex justify-content-between align-items-center pt-4">
-                                  <div>
-                                    <span className="rating-number">
-                                      {anime.attributes.startDate}
-                                    </span>
-                                  </div>
-
-                                  <span className="buy">
-                                    Rang: {anime.attributes.ratingRank}
-                                  </span>
-                                </div>
+                            <div
+                              className="row d-inline-flex align-items-center"
+                              style={{ color: "red" }}
+                            >
+                              <div className="my-0 pr-1">
+                                <FaHeart className="mb-1" />
                               </div>
                             </div>
-                          </div>
-                        </>;
-                      })}
+                          </button>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </>
   );

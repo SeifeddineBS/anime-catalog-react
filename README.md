@@ -1,70 +1,49 @@
-# Getting Started with Create React App
+# Anime Catalog App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is an anime catalog application developed using **React**. The app allows users to browse through a list of animes using data fetched from the [Kitsu API](https://kitsu.docs.apiary.io/#reference/anime). Users can sort, filter, and search for animes by various criteria like release year, age rating, and title. Each anime has its own detail page, showing information such as title, synopsis, ranking, and available images (poster and cover).
 
-## Available Scripts
+The application also features a favorites list, where users can add their favorite animes, and access them in a Netflix-style grid layout. The app is fully responsive, ensuring a smooth experience across different screen sizes from 1000px to 2000px.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **Anime List**: A table that displays anime information with sorting, filtering, and searching functionality.
+- **Anime Details Page**: Includes title, synopsis, ranking, and poster/cover images.
+- **Favorites Page**: A separate page listing all favorited animes.
+- **Pagination/Infinite Scroll**: Navigate through multiple pages of anime results.
+- **Responsive Design**: Optimized for all screen sizes between 1000px to 2000px.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Technologies Used
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **React JS**: Frontend framework.
+- **React Router Dom**: For routing between different pages.
+- **Axios**: For making API requests to fetch data.
+- **React Table**: For handling table data, sorting, and pagination.
+- **SCSS**: For styling and responsive design.
 
-### `npm test`
+## Setup and Installation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Clone this repository.
+   ```
+   git clone https://github.com/yourusername/anime-catalog-react.git
+   ```
+2. Navigate to the project directory.
+   ```
+   cd anime-catalog-react
+   ```
+3. Install dependencies.
+   ```
+   npm install
+   ```
+4. Run the app in development mode.
+   ```
+   npm start
+   ```
+   Open [http://localhost:3000](http://localhost:3000) to view the app in your browser.
 
-### `npm run build`
+## Deployment
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+This app is deployed on [Netlify/Vercel] (add your deployment link here).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## API
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project uses the [Kitsu Anime API](https://kitsu.docs.apiary.io/#reference/anime) to fetch anime data.

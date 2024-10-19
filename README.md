@@ -42,7 +42,7 @@ The application also features a favorites list, where users can add their favori
 
 ## Deployment
 
-This app is deployed on [Netlify/Vercel] (add your deployment link here).
+This app is deployed on Vercel
 
 ## API
 
